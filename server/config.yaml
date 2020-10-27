@@ -1,3 +1,6 @@
+base:
+  addr: "0.0.0.0:88"
+
 redis:
   addr: "192.168.8.237:6379"
   user: ""
@@ -20,3 +23,9 @@ zap:
   path: './logs/app.log'
   max-size: 5   #文件分割的文件大小
   max-backups: 3   #保留日志文件个数
+
+# captcha configuration
+captcha:
+  key-long: 6
+  img-width: 240
+  img-height: 80

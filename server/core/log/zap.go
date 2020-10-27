@@ -39,7 +39,7 @@ func InitLogger() {
     encoder := getEncoder()
     level := getlogLevel(_zapConf.Level)
     core := zapcore.NewCore(encoder, writeSyncer, level)
-    _logger = zap.New(core, zap.AddCaller())
+    _logger = zap.New(core, zap.AddCaller(),zap.AddCallerSkip(1))
 
 }
 

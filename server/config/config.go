@@ -6,19 +6,20 @@ import (
     "github.com/fsnotify/fsnotify"
 )
 
-
 type Config struct {
-    Redis Redis `mapstructure:"redis"`
-    Mysql Mysql `mapstructure:"mysql"`
-    Zap  Zap `mapstructure:"zap"`
+    Base    Base    `mapstructure:"base"`
+    Redis   Redis   `mapstructure:"redis"`
+    Mysql   Mysql   `mapstructure:"mysql"`
+    Zap     Zap     `mapstructure:"zap"`
+    Captcha Captcha `mapstructure:"captcha"`
 }
 
 type Zap struct {
-    Level     string `mapstructure:"addr"`
-    Path     string `mapstructure:"path"`
-    LogInConsole     bool `mapstructure:"log-in-console"`
-    MaxSize   int  `mapstructure:"max-size"`
-    MaxBackups   int  `mapstructure:"max-backups"`
+    Level        string `mapstructure:"addr"`
+    Path         string `mapstructure:"path"`
+    LogInConsole bool   `mapstructure:"log-in-console"`
+    MaxSize      int    `mapstructure:"max-size"`
+    MaxBackups   int    `mapstructure:"max-backups"`
 }
 
 type Redis struct {
@@ -36,6 +37,16 @@ type Mysql struct {
     Config       string `mapstructure:"config"`
     MaxIdleConns int    `mapstructure:"max-idle-conns"`
     MaxOpenConns int    `mapstructure:"max-open-conns"`
+}
+
+type Base struct {
+    Addr string `mapstructure:"addr"`
+}
+
+type Captcha struct {
+    KeyLong   int `mapstructure:"key-long"`
+    ImgWidth  int `mapstructure:"img-width"`
+    ImgHeight int `mapstructure:"img-height"`
 }
 
 var Conf = &Config{
