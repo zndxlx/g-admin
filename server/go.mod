@@ -13,8 +13,6 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/lib/pq v1.3.0
-	github.com/mattn/go-sqlite3 v1.9.0
 	github.com/mojocn/base64Captcha v1.3.1
 	github.com/pkg/errors v0.8.1
 	github.com/satori/go.uuid v1.2.0

@@ -25,7 +25,6 @@ func Login(u string, p string) (err error, userInter *model.SysUser) {
 
 func Register(u *model.SysUser) (err error, userInter *model.SysUser) {
     //var user model.SysUser
-    
     u.Password = utils.MD5V([]byte(u.Password))
     u.UUID = uuid.NewV4()
     now := time.Now()

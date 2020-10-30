@@ -6,6 +6,7 @@ import (
     
     "errors"
     "time"
+    "github.com/jmoiron/sqlx"
 )
 
 type SysAuthorityOp struct {
@@ -35,7 +36,7 @@ func (SysAuthorityOp) GetAuthorityInfoList(info model.PageInfo) (err error, list
             err = ISysAuthority.findChildrenAuthority(&authority[k])
         }
     }
-    ISysAuthority.loadSysDataAuthorityId()
+    //ISysAuthority.loadSysDataAuthorityId()
     return err, authority, total
 }
 
@@ -64,11 +65,16 @@ func (SysAuthorityOp)findChildrenAuthority(authority *model.SysAuthority) (err e
 //     return err
 // }
 
-func (SysAuthorityOp)loadSysDataAuthorityId() (err error, mList map[string][]string) {
+func (SysAuthorityOp)loadSysDataAuthorityId(ids []string) (err error, mList map[string][]string) {
     var list []model.SysDataAuthorityId
-    err = _gDB.Select(&list, "select sys_authority_authority_id, data_authority_id_authority_id from sys_data_authority_id")
+    
+    query, args, err := sqlx.In("select sys_authority_authority_id, data_authority_id_authority_id from sys_data_authority_id where sys_authority_authority_id in (?)", ids)
     if err != nil {
-        fmt.Printf("111111111111 err=%+v\n",err )
+        return
+    }
+    query = _gDB.Rebind(query)
+    err = _gDB.Select(&list, query, args...)
+    if err != nil {
         return
     }
     mList = make(map[string][]string)

@@ -25,7 +25,7 @@ type LoginReq struct {
     CaptchaId string `json:"captchaId" binding:"required"`
 }
 
-type LoginResponse struct {
+type LoginRsp struct {
     User      *model.SysUser `json:"user"`
     Token     string         `json:"token"`
     ExpiresAt int64          `json:"expiresAt"`
@@ -61,7 +61,7 @@ func Login(c *gin.Context) {
                 response.FailWithMessage("获取token失败", c)
                 return
             }
-            response.OkWithData(LoginResponse{
+            response.OkWithData(LoginRsp{
                 User:      user,
                 Token:     token,
                 ExpiresAt: clams.StandardClaims.ExpiresAt * 1000,
@@ -82,7 +82,7 @@ type RegisterReq struct {
     AuthorityId string `json:"authorityId" binding:"required"`
 }
 
-type RegisterResponse struct {
+type RegisterRsp struct {
     User model.SysUser `json:"user"`
 }
 
@@ -96,9 +96,9 @@ func Register(c *gin.Context) {
     user := &model.SysUser{Username: R.Username, NickName: R.NickName, Password: R.Password, HeaderImg: R.HeaderImg, AuthorityId: R.AuthorityId}
     err, userReturn := service.Register(user)
     if err != nil {
-        response.FailWithDetailed(response.ERROR, RegisterResponse{User: *userReturn}, fmt.Sprintf("%v", err), c)
+        response.FailWithDetailed(response.ERROR, RegisterRsp{User: *userReturn}, fmt.Sprintf("%v", err), c)
     } else {
-        response.OkDetailed(RegisterResponse{User: *userReturn}, "注册成功", c)
+        response.OkDetailed(RegisterRsp{User: *userReturn}, "注册成功", c)
     }
 }
 

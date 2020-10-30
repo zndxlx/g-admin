@@ -18,10 +18,11 @@ func SetupRouter() *gin.Engine {
     //log.Info("use middleware cors")
 
     // 方便统一添加路由组前缀 多服务器上线使用
-    ApiGroup := r.Group("")
+    ApiGroup := r.Group("api")
     InitBaseRouter(ApiGroup)
     InitUserRouter(ApiGroup)                  // 注册用户路由
     InitAuthorityRouter(ApiGroup)
+    InitCustomerRouter(ApiGroup)
     log.Info("router register success")
     return r
 }

@@ -32,7 +32,7 @@ type CreateAuthorityReq struct {
     ParentId        string         `json:"parentId" binding:"required"`
 }
 
-type SysAuthorityResponse struct {
+type SysAuthorityRsp struct {
     Authority model.SysAuthority `json:"authority"`
 }
 
@@ -52,7 +52,7 @@ func CreateAuthority(c *gin.Context) {
     if err != nil {
         response.FailWithMessage(fmt.Sprintf("创建失败，%v", err), c)
     } else {
-        response.OkWithData(SysAuthorityResponse{Authority: *sysAuthority}, c)
+        response.OkWithData(SysAuthorityRsp{Authority: *sysAuthority}, c)
     }
 }
 
@@ -96,6 +96,6 @@ func UpdateAuthority(c *gin.Context) {
     if err != nil {
         response.FailWithMessage(fmt.Sprintf("更新失败，%v", err), c)
     } else {
-        response.OkWithData(SysAuthorityResponse{Authority: *sysAuthority}, c)
+        response.OkWithData(SysAuthorityRsp{Authority: *sysAuthority}, c)
     }
 }
