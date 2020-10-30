@@ -29,3 +29,10 @@ captcha:
   key-long: 6
   img-width: 240
   img-height: 80
+
+jwt:
+  signing-key: 'qmPlus'
+
+  # casbin configuration
+casbin:
+  model-path: './resource/rbac_model.conf'

@@ -12,6 +12,9 @@ type Config struct {
     Mysql   Mysql   `mapstructure:"mysql"`
     Zap     Zap     `mapstructure:"zap"`
     Captcha Captcha `mapstructure:"captcha"`
+    JWT JWT     `mapstructure:"jwt"`
+    Casbin Casbin  `mapstructure:"casbin"`
+    
 }
 
 type Zap struct {
@@ -47,6 +50,14 @@ type Captcha struct {
     KeyLong   int `mapstructure:"key-long"`
     ImgWidth  int `mapstructure:"img-width"`
     ImgHeight int `mapstructure:"img-height"`
+}
+
+type JWT struct {
+    SigningKey string `mapstructure:"signing-key"`
+}
+
+type Casbin struct {
+    ModelPath string `mapstructure:"model-path"`
 }
 
 var Conf = &Config{

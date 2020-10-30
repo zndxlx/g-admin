@@ -21,7 +21,7 @@ func SetupRouter() *gin.Engine {
     ApiGroup := r.Group("")
     InitBaseRouter(ApiGroup)
     InitUserRouter(ApiGroup)                  // 注册用户路由
-    
+    InitAuthorityRouter(ApiGroup)
     log.Info("router register success")
     return r
 }

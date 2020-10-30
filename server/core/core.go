@@ -4,7 +4,7 @@ import (
     "g-admin/core/log"
 )
 
-func InitCore() {
+func Init() {
     log.InitLogger()
  
 }
