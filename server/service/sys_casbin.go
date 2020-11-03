@@ -16,17 +16,38 @@ func initCasbin() {
     dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?%s",
         mysqlconf.Username, mysqlconf.Password, mysqlconf.Path, mysqlconf.Dbname, mysqlconf.Config)
     
-    a, _ := gormadapter.NewAdapter("mysql", dsn, true)
-    e, _ := casbin.NewEnforcer(config.Conf.Casbin.ModelPath, a)
+    adp, err := gormadapter.NewAdapter("mysql", dsn, true)
+    if err != nil {
+        panic(err)
+    }
+    e, err := casbin.NewEnforcer(config.Conf.Casbin.ModelPath, adp)
+    if err != nil {
+        panic(err)
+    }
     e.AddFunction("ParamsMatch", ParamsMatchFunc)
-    _ = e.LoadPolicy()
-    
+    err = e.LoadPolicy()
+    if err != nil {
+        panic(err)
+    }
     _enforcer = e
+    //fmt.Printf("initCasbin end e=%v\n", _enforcer)
 }
 
 func Casbin() *casbin.Enforcer {
+    fmt.Printf("Casbin _enforcer=%v\n", _enforcer)
     return _enforcer
 }
+
+// func Casbin() *casbin.Enforcer {
+//     mysqlconf := &config.Conf.Mysql
+//     dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?%s",
+//         mysqlconf.Username, mysqlconf.Password, mysqlconf.Path, mysqlconf.Dbname, mysqlconf.Config)
+//     a, _ := gormadapter.NewAdapter("mysql", dsn, true)
+//     e, _ := casbin.NewEnforcer(config.Conf.Casbin.ModelPath, a)
+//     e.AddFunction("ParamsMatch", ParamsMatchFunc)
+//     _ = e.LoadPolicy()
+//     return e
+// }
 
 func GetPolicyPathByAuthorityId(authorityId string) {
     e := Casbin()

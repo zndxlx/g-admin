@@ -5,6 +5,7 @@ import (
     "time"
     "fmt"
     "github.com/jmoiron/sqlx"
+    "github.com/pkg/errors"
 )
 
 type ExaCustomerOp struct {
@@ -12,7 +13,7 @@ type ExaCustomerOp struct {
 var IExaCustomer = ExaCustomerOp{}
 
 func (ExaCustomerOp)CreateExaCustomer(customer *model.ExaCustomer)(err error){
-    sqlStr := "insert into exa_customers(created_at, updated_at,,customer_name, customer_phone_data, sys_user_id, sys_user_authority_id) Values (:created_at, :updated_at, :customer_name, :customer_phone_data, :sys_user_id, :sys_user_authority_id)"
+    sqlStr := "insert into exa_customers(created_at, updated_at, customer_name, customer_phone_data, sys_user_id, sys_user_authority_id) Values (:created_at, :updated_at, :customer_name, :customer_phone_data, :sys_user_id, :sys_user_authority_id)"
     _, err  = _gDB.NamedExec(sqlStr, customer)
     return
 }
@@ -26,8 +27,20 @@ func (ExaCustomerOp)DeleteExaCustomer(id int64)(err error){
 
 func (ExaCustomerOp)UpdateExaCustomer(e *model.ExaCustomer) (err error) {
     sqlStr := "update exa_customers set updated_at=?, customer_name=?, customer_phone_data=? where id=?"
-    _, err  = _gDB.Exec(sqlStr, time.Now(), e.CustomerName, e.CustomerPhoneData, e.ID)
-    return nil
+    fmt.Printf("UpdateExaCustomer sqlStr=%v， e=%+v\n", sqlStr, *e)
+    r, err  := _gDB.Exec(sqlStr, time.Now(), e.CustomerName, e.CustomerPhoneData, e.ID)
+    if err != nil {
+        return err
+    }
+    rows, err := r.RowsAffected()
+    if err != nil {
+        return err
+    }
+    if rows == 0 {
+        return errors.New("0行被修改")
+    }
+    
+    return
 }
 
 func (ExaCustomerOp)GetExaCustomer(id int64) (err error, customer model.ExaCustomer) {
@@ -41,13 +54,14 @@ func (ExaCustomerOp)GetExaCustomer(id int64) (err error, customer model.ExaCusto
 func (ExaCustomerOp)GetCustomerInfoList(sysUserAuthorityID string, info model.PageInfo) (err error, list interface{}, total int64) {
     limit := info.PageSize
     offset := info.PageSize * (info.Page - 1)
-    
+
     // 获取有权限的资源列表
     err, mList := ISysAuthority.loadSysDataAuthorityId([]string{sysUserAuthorityID})
     if err != nil {
+        err = errors.Wrap(err, "loadSysDataAuthorityId failed")
         return
     }
-    //获取总数
+    // 获取总数
     query, args, err := sqlx.In("SELECT count(*) FROM exa_customers where sys_user_authority_id in (?)", mList[sysUserAuthorityID])
     if err != nil {
         fmt.Printf("111111111111111111 err=%+v\n", err)

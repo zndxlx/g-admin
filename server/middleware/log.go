@@ -9,7 +9,10 @@ import (
     "net/http"
     "io/ioutil"
     "strings"
+    "g-admin/utils"
 )
+
+
 
 func GinCommonLogger() gin.HandlerFunc {
     return func(c *gin.Context) {
@@ -17,7 +20,8 @@ func GinCommonLogger() gin.HandlerFunc {
         path := c.Request.URL.Path
         query := c.Request.URL.RawQuery
         c.Next()
-        
+    
+        //utils.GetCtxExtErr(c)
         cost := time.Since(start)
         log.Info(path,
             zap.Int("status", c.Writer.Status()),
@@ -27,6 +31,7 @@ func GinCommonLogger() gin.HandlerFunc {
             zap.String("ip", c.ClientIP()),
             zap.String("user-agent", c.Request.UserAgent()),
             zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
+            zap.String("exErr",utils.GetCtxExErr(c)),
             zap.Duration("cost", cost),
         )
     }
@@ -81,6 +86,7 @@ func GinDetailLogger() gin.HandlerFunc {
             zap.String("req", string(body)),
             zap.String("Resp", writer.body.String()),
             zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
+            zap.String("exErr",utils.GetCtxExErr(c)),
             zap.Duration("latency", latency),
         )
 

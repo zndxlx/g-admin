@@ -2,9 +2,8 @@ package dao
 
 import (
     "g-admin/dao/model"
-    "fmt"
     
-    "errors"
+    "github.com/pkg/errors"
     "time"
     "github.com/jmoiron/sqlx"
 )
@@ -54,20 +53,9 @@ func (SysAuthorityOp)findChildrenAuthority(authority *model.SysAuthority) (err e
     return err
 }
 
-// func findChildrenAuthority(authority *model.SysAuthority) (err error) {
-//     //err = global.GVA_DB.Preload("DataAuthorityId").Where("parent_id = ?", authority.AuthorityId).Find(&authority.Children).Error
-//     sqlStr := ""
-//     if len(authority.Children) > 0 {
-//         for k := range authority.Children {
-//             err = findChildrenAuthority(&authority.Children[k])
-//         }
-//     }
-//     return err
-// }
 
 func (SysAuthorityOp)loadSysDataAuthorityId(ids []string) (err error, mList map[string][]string) {
     var list []model.SysDataAuthorityId
-    
     query, args, err := sqlx.In("select sys_authority_authority_id, data_authority_id_authority_id from sys_data_authority_id where sys_authority_authority_id in (?)", ids)
     if err != nil {
         return
@@ -81,7 +69,7 @@ func (SysAuthorityOp)loadSysDataAuthorityId(ids []string) (err error, mList map[
     for _, l := range list {
         mList[l.SysAuthorityAuthorityId] = append(mList[l.SysAuthorityAuthorityId], l.DataAuthorityIdAuthorityId)
     }
-    fmt.Printf("111111111111 %+v\n",mList )
+   // fmt.Printf("111111111111 %+v\n",mList )
     return
 }
 
@@ -103,7 +91,7 @@ func (SysAuthorityOp)DeleteAuthority(id string) (err error) {
         return errors.New("此角色存在子角色不允许删除")
     }
     
-    //删除sys_authority_menus 中 角色id相关的menu
+    //删除sys_authority_menus中角色id相关的menu
     sqlStr := "delete from sys_authority_menus where  sys_authority_authority_id = ?"
     _, err  = _gDB.Exec(sqlStr, id)
     if err != nil {
@@ -115,6 +103,7 @@ func (SysAuthorityOp)DeleteAuthority(id string) (err error) {
     if err != nil {
         return
     }
+    
     //删除casbin
    
     return err

@@ -9,6 +9,7 @@ import (
     "g-admin/dao"
     "time"
     "g-admin/utils/jwt"
+    "g-admin/utils"
 )
 
 type CreateExaCustomerReq struct {
@@ -55,12 +56,13 @@ func DeleteExaCustomer(c *gin.Context) {
 }
 
 type UpdateExaCustomerReq struct {
+    ID      int64 `json:"ID" binding:"required"`
     CustomerName      string `json:"customerName" binding:"required"`
     CustomerPhoneData string `json:"customerPhoneData" binding:"required"`
 }
 
 func UpdateExaCustomer(c *gin.Context) {
-    var R CreateExaCustomerReq
+    var R UpdateExaCustomerReq
     if err := c.ShouldBindJSON(&R); err != nil {
         errReqFormatRespone(err, c)
         return
@@ -69,6 +71,7 @@ func UpdateExaCustomer(c *gin.Context) {
     err := dao.IExaCustomer.UpdateExaCustomer(&model.ExaCustomer{
         Model: model.Model{
             UpdatedAt: time.Now(),
+            ID: R.ID,
         },
         CustomerName:      R.CustomerName,
         CustomerPhoneData: R.CustomerPhoneData,
@@ -105,6 +108,7 @@ func GetExaCustomerList(c *gin.Context) {
     
     err, customerList, total := dao.IExaCustomer.GetCustomerInfoList(waitUse.AuthorityId, pageInfo)
     if err != nil {
+        utils.SetCtxExErr(c, err)
         response.FailWithMessage(fmt.Sprintf("获取失败：%v", err), c)
     } else {
         response.OkWithData(model.PageResult{

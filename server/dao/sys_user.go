@@ -112,7 +112,8 @@ func (SysUserOp)GetUserInfoList(info model.PageInfo) (err error, list []model.Sy
     }
     limit := info.PageSize
     offset := info.PageSize * (info.Page - 1)
-    sqlStr := "select id, created_at, updated_at, deleted_at, uuid, username, nick_name, password, nick_name,  header_img, authority_id from sys_users limit ?, ?"
+    sqlStr := "select u.id, u.created_at, u.updated_at, u.deleted_at, u.uuid, u.username, u.nick_name, u.password, u.nick_name,  u.header_img, " +
+        "u.authority_id , a.authority_id as aid, a.authority_name, a.parent_id  from sys_users u join sys_authorities a on u.authority_id = a.authority_id limit ?, ?"
     err = _gDB.Select(&list, sqlStr, offset, limit)
 
     return
